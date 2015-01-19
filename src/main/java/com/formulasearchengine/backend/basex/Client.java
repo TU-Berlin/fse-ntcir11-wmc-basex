@@ -13,6 +13,8 @@ public class Client {
 	private Results results = new Results();
 	private Results.Run currentRun = results.new Run( "baseX"+System.currentTimeMillis(), "automated" );
 	private Results.Run.Result currentResult;
+	private Long measurement;
+
 	public String getXML (){
 		return results.toXML();
 	}
@@ -25,7 +27,8 @@ public class Client {
 		}
 		results.addRun( currentRun );
 	}
-
+	public Client () {
+	}
 	private void processPattern (NtcirPattern pattern) {
 		currentResult = currentRun.new Result( pattern.getNum() );
 		basex( pattern.getxQueryExpression() );
@@ -37,7 +40,13 @@ public class Client {
 	 * result in a list
 	 */
 	public Long basex(String query) {
-		Long measurement = -1L;
+		measurement = -1L;
+		if ( runQuery( query ) ) return measurement;
+
+		return measurement;
+	}
+
+	private boolean runQuery (String query) {
 		Integer score = 10;
 		Integer rank = 1;
 		try {
@@ -56,12 +65,25 @@ public class Client {
 			conn.close();
 		} catch (XQException e) {
 			e.printStackTrace();
-			return measurement;
+			return true;
 		}
-
-		return measurement;
+		return false;
 	}
 
+	public String execute(String query){
+		currentResult = currentRun.new Result( "" );
+		try{
+			runQuery( query );
+			if ( currentResult.size() > 0 ){
+				return currentResult.toXML();
+			} else {
+				return "Query executed successful, but result set was empty.";
+			}
+
+		} catch ( Exception e){
+			return "Query :\n"+query+"\n\n failed " + e.getLocalizedMessage();
+		}
+	}
 	private static XQConnection getXqConnection () throws XQException {
 		XQDataSource xqs = new BaseXXQDataSource();
 		xqs.setProperty("serverName", "localhost");

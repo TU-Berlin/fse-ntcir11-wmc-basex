@@ -106,7 +106,9 @@ public class Results {
 				this.ms = ms;
 				this.num = num;
 			}
-
+			public int size(){
+				return hits.size();
+			}
 			public Result(String num) {
 				this.num = num;
 			}
