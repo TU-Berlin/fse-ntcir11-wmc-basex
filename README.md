@@ -1,3 +1,6 @@
+This repository is no longer maintained.
+View https://github.com/physikerwelt/mathsearch-backend-basex for the latest version.
+
 fse-ntcir11-wmc-basex
 =====================
 
